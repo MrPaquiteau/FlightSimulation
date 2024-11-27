@@ -2,7 +2,7 @@ from emoji import emojize
 from models.seat import Seat
 from models.passenger import Passenger
 
-def adapted_affichage(flight, round):
+def display_simulation(flight, round):
     display_layout = [
         [
             emojize(':seat:') if isinstance(cell, Seat) 
