@@ -1,4 +1,7 @@
 import copy
+import os
+import time
+from emoji import emojize
 import random
 from .passenger import Passenger  # Importing the Passenger class (assumed to handle passenger details)
 from .aircraft import Aircraft  # Importing the Aircraft class
@@ -182,3 +185,56 @@ class Flight:
                         passengers_by_aisle[aisle].append(passenger)
 
         return passengers_by_aisle
+
+    def boarding_simulation(self, time_interval=0.5):
+        """
+        Simulates the boarding process of passengers onto the aircraft.
+        """
+        layout = tuple(tuple(row) for row in self._aircraft.layout)
+
+        passengers_by_aisle = self.get_passengers_by_aisle()
+        for aisle, passengers in passengers_by_aisle.items():
+            random.shuffle(passengers)
+        while any(not passenger.is_seated and passenger.seat for passenger in self._passengers):  # Verify if all passengers with seats are seated
+            for aisle, seats in self._aircraft.get_closest_seats_for_each_aisle().items():
+                min_column = layout[0].index(seats[0])
+                max_column = layout[-2].index(seats[-1])
+                columns = list(range(min_column, max_column + 1))
+                columns.remove(aisle)
+                order = []
+                # We take first the extreme columns and then the middle ones 
+                while columns:
+                    order.append(columns.pop(0))
+                    if columns:
+                        order.append(columns.pop(-1))
+                order = order + [aisle]
+                self.boarding(order, passengers_by_aisle[aisle])
+            self.display_boarding_simulation()
+            time.sleep(time_interval)
+        print("Boarding completed!")
+
+    def display_boarding_simulation(self):
+        """
+        Displays the current state of the boarding simulation.
+        """
+        os.system('cls' if os.name == 'nt' else 'clear') 
+
+        display_layout = [
+            [
+                emojize(':seat:') if isinstance(cell, Seat) 
+                else emojize(':busts_in_silhouette:') if (isinstance(cell, tuple) and len(cell) == 3) 
+                else emojize(":bust_in_silhouette:") if (isinstance(cell, tuple) and cell[0].is_seated) 
+                else emojize(':men’s_room:') if (isinstance(cell, Passenger) or (isinstance(cell, tuple) and not cell[0].is_seated)) 
+                else emojize(':cross_mark:') if cell == "|" 
+                else cell
+                for cell in row
+            ]
+            for row in self._aircraft.layout
+        ]
+
+        displayed_layout = [["|"] + row + ["|"] for row in display_layout]
+
+        indentation = (20 - self._aircraft.columns - 2) * " "
+
+        output = "\n".join([indentation + " ".join(line) for line in displayed_layout[:-1]])
+        print(output)

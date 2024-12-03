@@ -91,7 +91,7 @@ To get started, clone the repository to your local machine:
 
 ```bash
 git clone https://github.com/MrPaquiteau/flight-boarding-simulation.git
-cd FlightSimulation
+cd flight-boarding-simulation
 ```
 
 ### 2. Install Dependencies
@@ -118,7 +118,7 @@ aircraft = Aircraft(rows=20, columns=8)
 flight = Flight(aircraft)
 
 # Launch the simulation
-simulation(flight)
+flight.boarding_simulation()
 ```
 
 ## Contributing
@@ -127,4 +127,4 @@ If you would like to contribute to this project, please fork the repository and 
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
