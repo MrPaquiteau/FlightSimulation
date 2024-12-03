@@ -103,7 +103,7 @@ pip install -r requirements.txt
 Execute the main.py script to start the boarding simulation:
 
 ```bash
-python src/main.py
+python main.py
 ```
 
 ## Usage
